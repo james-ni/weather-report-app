@@ -3,6 +3,7 @@ package com.james.weather.controller;
 import com.james.weather.dto.WeatherDto;
 import com.james.weather.exception.RateLimitExceededException;
 import com.james.weather.service.RateLimitService;
+import com.james.weather.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +21,8 @@ public class WeatherController {
 
     private final RateLimitService rateLimitService;
 
+    private final WeatherService weatherService;
+
     @GetMapping("/weather")
     public ResponseEntity<WeatherDto> getWeather(
             @RequestParam("city") @NotBlank String city,
@@ -30,6 +33,6 @@ public class WeatherController {
             throw new RateLimitExceededException();
         }
 
-        return ResponseEntity.ok(new WeatherDto(city, country, ""));
+        return ResponseEntity.ok(weatherService.getWeather(city,country));
     }
 }

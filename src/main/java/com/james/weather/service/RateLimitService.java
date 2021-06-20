@@ -6,6 +6,7 @@ import com.james.weather.model.ApikeyUsage;
 import com.james.weather.repository.ApikeyRepository;
 import com.james.weather.repository.ApikeyUsageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;

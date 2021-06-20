@@ -1,7 +1,11 @@
 package com.james.weather.controller;
 
+import com.james.weather.dto.WeatherDto;
+import com.james.weather.exception.CityNotFoundException;
 import com.james.weather.exception.InvalidApikeyException;
 import com.james.weather.service.RateLimitService;
+import com.james.weather.service.WeatherService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,9 +31,19 @@ public class WeatherControllerTest {
     @MockBean
     private RateLimitService rateLimitService;
 
+    @MockBean
+    private WeatherService weatherService;
+
+    @BeforeEach
+    void setUp(){
+        WeatherDto weatherDto = WeatherDto.builder().city("city").country("country").description("").build();
+        when(weatherService.getWeather("city", "country")).thenReturn(weatherDto);
+    }
+
     @Test
     public void getWeather_validRequest_returnSuccess() throws Exception {
         when(rateLimitService.isLimitExceeded(anyString(), any(OffsetDateTime.class))).thenReturn(false);
+
 
         mockMvc.perform(get("/weather")
                 .param("city", "city")
@@ -97,5 +111,19 @@ public class WeatherControllerTest {
                 .param("apikey", "apikey"))
                 .andExpect(status().isTooManyRequests())
                 .andExpect(jsonPath("$.message").value("Rate limit exceeded"));
+    }
+
+    @Test
+    public void getWeather_cityNotFound_returnError() throws Exception {
+        when(weatherService.getWeather(anyString(), anyString())).thenThrow(
+                new CityNotFoundException("Weather information not found for City: city Country: country")
+        );
+
+        mockMvc.perform(get("/weather")
+                .param("city", "city")
+                .param("country", "country")
+                .param("apikey", "apikey"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Weather information not found for City: city Country: country"));
     }
 }

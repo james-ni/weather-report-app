@@ -1,6 +1,7 @@
 package com.james.weather.controller;
 
 import com.james.weather.dto.ErrorDto;
+import com.james.weather.exception.CityNotFoundException;
 import com.james.weather.exception.InvalidApikeyException;
 import com.james.weather.exception.RateLimitExceededException;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler({RateLimitExceededException.class})
     public ResponseEntity<ErrorDto> handleRateLimitException(Exception exception){
         return new ResponseEntity(new ErrorDto(exception.getMessage()), HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    @ExceptionHandler({CityNotFoundException.class})
+    public ResponseEntity<ErrorDto> handleNotFoundException(Exception exception){
+        return new ResponseEntity(new ErrorDto(exception.getMessage()), HttpStatus.NOT_FOUND);
     }
 
 }

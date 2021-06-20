@@ -14,3 +14,11 @@ spring:
   h2:
     console:
       enabled: true
+
+openweathermap:
+  api:
+    url: http://api.openweathermap.org/data/2.5/weather
+    apikey: 22ee18701c5d343f2e7484e0d3a1514a
+
+app:
+  cache-expiration-in-minutes: 60
