@@ -22,3 +22,7 @@ openweathermap:
 
 app:
   cache-expiration-in-minutes: 60
+
+logging:
+  level:
+    com.james.weather: info
